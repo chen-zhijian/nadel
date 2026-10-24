@@ -53,7 +53,11 @@ The script builds `papers/src/nadel_vanishing_note.tex` with XeLaTeX and refresh
 
 ## Maintain the website link
 
-Edit the source in this repository, rebuild and inspect the PDF, then commit and push both source and PDF to `main`. The personal website points to `papers/paper_v1.pdf` in this repository, so it reaches the updated manuscript without copying a PDF into the website repository. Update the website separately if the title, summary, scope, author credit, or link path changes.
+The owner maintains the manuscript in its original local LaTeX file. Automatic syncing is configured to check for changes every 15 minutes while the owner's computer and synchronization service are available. A successful run publishes the packaged source, rebuilt `papers/paper_v1.pdf`, and `verification/build_manifest.json` together. Failed builds leave the last published manuscript in place. The PDF path stays stable, so the existing repository and [personal website](https://chen-zhijian.github.io/) links reach the updated manuscript.
+
+When the manuscript changes, the maintenance agent reviews the title, author credits, summary, and scope statements in this README and on the website, and updates them where needed. Build and consistency checks do not establish mathematical correctness. Automatic syncing does not reconstruct or regenerate the historical AI conversation and usage records.
+
+Other contributors can use the documented build procedure above: edit `papers/src/`, rebuild and inspect the PDF, run `python verification/scripts/verify.py`, and commit the source, PDF, and build manifest together. Coordinate manuscript revisions with the owner so the original source and repository remain consistent.
 
 ## License
 
