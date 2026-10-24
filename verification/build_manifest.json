@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "source": "papers/src/nadel_vanishing_note.tex",
-  "source_sha256": "7633622a16495d9baac35c500dbaf62481dc6a4fe55a4e475425d5c44f3c483f",
+  "source_sha256": "5a894f42a47a0e6b70487d95bfae6bc0edd7f58787684494ed25b3ce6c9b56e4",
   "pdf": "papers/paper_v1.pdf",
-  "pdf_sha256": "2f26bca0799fd8da4f389a11953f733830119f27fc0923f2fdaef6f773028612",
-  "built_at_utc": "2026-10-24T04:12:41.1802600Z",
+  "pdf_sha256": "08f0ed9a56854c53a49b33c0cd6a086e988ebaacada7f4295f1ae9f62caf863b",
+  "built_at_utc": "2026-10-24T04:38:38.316638+00:00",
   "engine": "xelatex",
   "passes": 3,
   "unresolved_references": false,
