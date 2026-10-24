@@ -1,0 +1,16 @@
+.build/
+__pycache__/
+*.pyc
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+.DS_Store
+Thumbs.db
+
+# Preserve the pre-existing local originals; maintained source is papers/src/.
+/nadel_vanishing_note.tex
+/nadel_vanishing_note.pdf

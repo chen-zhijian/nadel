@@ -1,0 +1,584 @@
+% !TeX program = xelatex
+% Self-contained LaTeX source. No external bibliography or figures are needed.
+% Compile twice with: xelatex nadel_vanishing_note.tex
+% The engine-aware font setup also supports pdfLaTeX and LuaLaTeX.
+\documentclass[11pt,a4paper,reqno]{amsart}
+
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\else
+  % XeLaTeX/LuaLaTeX: native Unicode input and OpenType text fonts.
+  % Load TeX-distributed fonts by filename, avoiding system font-name lookup.
+  \usepackage[no-math]{fontspec}
+  \setmainfont{lmroman10-regular.otf}[
+    BoldFont=lmroman10-bold.otf,
+    ItalicFont=lmroman10-italic.otf,
+    BoldItalicFont=lmroman10-bolditalic.otf,
+    SmallCapsFont=lmromancaps10-regular.otf]
+  \setsansfont{lmsans10-regular.otf}[
+    BoldFont=lmsans10-bold.otf,
+    ItalicFont=lmsans10-oblique.otf,
+    BoldItalicFont=lmsans10-boldoblique.otf]
+  \setmonofont{lmmono10-regular.otf}[
+    ItalicFont=lmmono10-italic.otf]
+\fi
+\usepackage[margin=28mm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{mathrsfs}
+\ifPDFTeX
+  \usepackage{microtype}
+\else
+  % Font expansion is not supported by XeTeX.
+  \usepackage[expansion=false]{microtype}
+\fi
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+
+\hypersetup{
+  pdftitle={Nadel Vanishing on Singular Complex Spaces},
+  pdfauthor={Zhijian Chen},
+  pdfsubject={The weighted Grauert--Riemenschneider canonical sheaf and Nadel vanishing},
+  pdfkeywords={Nadel vanishing, complex spaces, Grauert-Riemenschneider sheaf, multiplier ideals, L2 estimates}
+}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textsc{Nadel vanishing on singular complex spaces}}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\numberwithin{equation}{section}
+
+\newcommand{\OO}{\mathcal O}
+\newcommand{\II}{\mathcal I}
+\newcommand{\FF}{\mathcal F}
+\newcommand{\scrA}{\mathscr A}
+\newcommand{\reg}{\mathrm{reg}}
+\newcommand{\sing}{\mathrm{sing}}
+\newcommand{\GR}{\mathrm{GR}}
+\newcommand{\loc}{\mathrm{loc}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\db}{\bar\partial}
+\newcommand{\ii}{\sqrt{-1}}
+\newcommand{\wGR}{\omega_X^{\GR}}
+\newcommand{\dV}{\,dV_\omega}
+\DeclareMathOperator{\Psh}{Psh}
+
+\setlength{\parskip}{3pt}
+\setlength{\emergencystretch}{2em}
+\allowdisplaybreaks[1]
+
+\title[Nadel vanishing on singular complex spaces]
+{Nadel Vanishing on Singular Complex Spaces\\
+via the Grauert--Riemenschneider Canonical Sheaf}
+\author{Zhijian Chen}
+\address{Institute of Mathematics, Academy of Mathematics and Systems Science, Chinese Academy of Sciences, Beijing 100190, China}
+\email{chenzhijian@amss.ac.cn}
+\date{October 24, 2026}
+
+\begin{document}
+
+\begin{abstract}
+We formulate Nadel vanishing for reduced, pure-dimensional, weakly
+pseudoconvex K\"ahler complex spaces. The correct replacement for
+$K_X\otimes\II(h)$ is the weighted Grauert--Riemenschneider canonical
+sheaf $\omega_X^{\GR}(h)$. We record its description on a resolution and
+derive the vanishing theorem from two stated analytic inputs: a weighted
+$L^2$-Dolbeault resolution and a global $\db$ estimate. The proof makes
+explicit the positivity required near the singular locus. We also explain
+why pullback to a resolution does not by itself prove vanishing and give a
+cusp example showing the failure of a naive tensor-product formulation.
+\end{abstract}
+
+\maketitle
+
+\section{Relevant results and scope}
+
+Demailly's Remark~5.17 in \cite{Demailly} introduces the integrable
+canonical module on a singular space, records its transformation under
+modifications, and formulates the corresponding Nadel vanishing theorem.
+It also stresses that the canonical factor and the multiplier condition
+must be treated together. Li \cite[Remark~2.2 and Theorem~2.3]{Li}
+uses the notation $\omega_X^{\GR}(\varphi)$ and gives an explicit
+singular-space formulation.
+
+For the analytic proof, Shentu--Zhao \cite[Theorem~1.3]{ShentuZhao}
+provide a weighted $L^2$-Dolbeault resolution of a direct image from a
+resolution of singularities. Watanabe
+\cite[Theorems~1.1, 1.3, and 1.4]{Watanabe} gives a weighted fine
+resolution, a global $L^2$ estimate, and Nadel vanishing, respectively.
+The global estimate used below is taken from the cited July~15, 2026
+version of that preprint; it is stated as an analytic input, not reproved
+here. Finally, Matsumura \cite[Corollary~1.5]{Matsumura} supplies relative
+Grauert--Riemenschneider vanishing with multiplier ideals, which explains
+the resolution-theoretic cohomology comparison in Section~\ref{sec:resolution}.
+
+Throughout, complex spaces are reduced and paracompact, and $X$ has pure
+complex dimension $n$. We write $X_{\reg}$ and $X_{\sing}$ for its regular
+and singular loci. A smooth function on $X$ is understood locally through
+an embedding into a complex manifold. A K\"ahler metric on $X$ is understood
+in the usual complex-space sense; on $X_{\reg}$ it determines a K\"ahler
+form $\omega$, locally comparable to an ambient Hermitian metric.
+
+We call $X$ \emph{weakly pseudoconvex} if it admits a smooth
+plurisubharmonic exhaustion $\Psi:X\to[0,\infty)$, meaning that
+$\{\Psi<c\}\Subset X$ for every $c$. Compact spaces are included by taking
+$\Psi$ constant. No normality, $\mathbb Q$-Gorenstein, or rational-singularity
+hypothesis is imposed. The K\"ahler, exhaustion, and curvature hypotheses,
+however, are part of the vanishing theorem and are not omitted.
+
+\section{The weighted canonical sheaf}
+\label{sec:sheaf}
+
+\begin{definition}
+Let $\varphi\in\Psh(X)$, with $\varphi$ not identically $-\infty$ on any
+irreducible component. The \emph{weighted Grauert--Riemenschneider
+canonical sheaf} is defined by
+\begin{equation}\label{eq:definition}
+\begin{split}
+\wGR(\varphi)(U)=\biggl\{\sigma\in
+H^0(U\cap X_{\reg},K_{X_{\reg}}):\;&
+\int_{V\cap X_{\reg}}
+\ii^{\,n^2}\sigma\wedge\overline\sigma\,e^{-2\varphi}<\infty\\
+&\text{for every }V\Subset U\biggr\}.
+\end{split}
+\end{equation}
+The integrability condition is imposed up to $X_{\sing}$, not just on
+compact subsets of $X_{\reg}$. In particular,
+$\wGR(0)=\wGR$, the usual Grauert--Riemenschneider canonical sheaf.
+\end{definition}
+
+This is the construction in \cite[Remark~5.17]{Demailly} and
+\cite[Remark~2.2]{Li}. Its use of top-degree forms makes the integrability
+condition intrinsic: it does not depend on a choice of background volume
+form.
+
+Let $L$ be a holomorphic line bundle on $X$, identified with its sheaf of
+holomorphic sections. A singular Hermitian metric $h$ is written in a
+local holomorphic frame $e$ as
+\begin{equation}\label{eq:convention}
+ |e|_h^2=e^{-2\varphi},
+ \qquad \ii\Theta_{L,h}=2\ii\partial\db\varphi.
+\end{equation}
+Unless stated otherwise, its local weights are plurisubharmonic on $X$
+and not identically $-\infty$ on any local irreducible component.
+If $e'=g e$ is another frame, then $\varphi'=\varphi-\log|g|$.
+Since $g$ is a holomorphic unit, the two weights differ by a locally
+bounded function and give the same integrability sheaf. We may therefore
+write $\wGR(h)$ for the sheaf locally defined by $\wGR(\varphi)$, and set
+\begin{equation}\label{eq:F}
+ \FF_{L,h}:=\wGR(h)\otimes_{\OO_X}L.
+\end{equation}
+Equivalently, $\FF_{L,h}$ consists of holomorphic $L$-valued top forms on
+$X_{\reg}$ that are locally square-integrable with respect to $h$, including
+near singular points.
+
+\begin{proposition}[Transformation rule]\label{prop:transform}
+Let $\pi:\widetilde X\to X$ be a resolution of singularities that is an
+isomorphism over $X_{\reg}$. Then
+\begin{align}
+ \wGR(\varphi)
+ &\simeq \pi_*\bigl(K_{\widetilde X}\otimes\II(\varphi\circ\pi)\bigr),
+ \label{eq:transform}\\
+ \FF_{L,h}
+ &\simeq \pi_*\bigl(K_{\widetilde X}\otimes\pi^*L
+                    \otimes\II(\pi^*h)\bigr).
+ \label{eq:twistedtransform}
+\end{align}
+Here $\II$ is the ordinary multiplier ideal on the smooth space
+$\widetilde X$, using the convention $e^{-2\varphi}$. In particular,
+these weighted canonical sheaves are coherent.
+\end{proposition}
+
+\begin{proof}
+The transformation rule is recorded in \cite[Remark~2.2]{Li}; we recall
+its local mechanism. Away from $\pi^{-1}(X_{\sing})$, pullback identifies
+the integrals of weighted top forms by change of variables. A form
+satisfying \eqref{eq:definition} pulls back to a holomorphic top form on
+the complement of that analytic set. Since $\varphi\circ\pi$ is locally
+bounded above, weighted square-integrability implies unweighted
+square-integrability. The $L^2$ removable-singularity theorem for
+holomorphic functions, applied to the coefficients of the top form,
+extends it holomorphically across the analytic set. The weighted
+condition then says exactly that its coefficients belong to
+$\II(\varphi\circ\pi)$.
+
+Conversely, such an upstairs form restricts and descends over
+$X_{\reg}$. Properness and change of variables give the required local
+integrability downstairs. This proves \eqref{eq:transform}; the same
+argument for local frames of $L$, or the projection formula, proves
+\eqref{eq:twistedtransform}. Coherence follows from coherence of smooth
+multiplier ideals and the proper direct image theorem.
+\end{proof}
+
+\section{Statement of the vanishing theorem}
+
+\begin{theorem}[Nadel vanishing with the weighted GR sheaf]
+\label{thm:main}
+Let $(X,\omega)$ be a reduced, pure $n$-dimensional, weakly pseudoconvex
+K\"ahler complex space. Let $L$ carry a singular Hermitian metric $h$ with
+plurisubharmonic local weights on $X$. Suppose there is a positive
+continuous function $\varepsilon:X\to(0,\infty)$ such that
+\begin{equation}\label{eq:curvature}
+ \ii\Theta_{L,h}\geq\varepsilon\omega
+ \quad\text{on }X_{\reg}
+\end{equation}
+in the sense of currents. Then
+\begin{equation}\label{eq:vanishing}
+ \boxed{\ H^q\bigl(X,\wGR(h)\otimes L\bigr)=0
+                 \quad\text{for every }q\geq1.\ }
+\end{equation}
+\end{theorem}
+
+This formulation follows from the analytic inputs in
+Section~\ref{sec:inputs}; compare \cite[Theorem~1.4]{Watanabe}.
+A standard sufficient positivity condition is that the local weights be
+strictly plurisubharmonic on the complex space, in the local ambient
+sense. Such weights give a lower bound as in \eqref{eq:curvature} with a
+positive smooth function; see \cite[Proposition~3.1]{Watanabe}.
+
+\begin{remark}[Positivity at the singular locus]\label{rem:positivity}
+The function $\varepsilon$ is positive on \emph{all of $X$}. Thus it has
+a positive lower bound on every compact subset, including those meeting
+$X_{\sing}$. Li's formulation \cite[Theorem~2.3]{Li} states a positive
+continuous bound on $X_{\reg}$. The theorem proved here deliberately
+uses the stronger hypothesis above: positivity only on $X_{\reg}$,
+with the bound possibly tending to zero at singular points, does not
+justify the compact-set integrability step in our proof. Compare the
+observation following \cite[Theorem~6.4]{Watanabe}.
+\end{remark}
+
+\section{Two analytic inputs}
+\label{sec:inputs}
+
+For $0\leq q\leq n$, let $\scrA^{n,q}_{L,h}$ be the sheaf whose sections on
+$U\subset X$ are measurable $L$-valued $(n,q)$-forms $u$ on
+$U\cap X_{\reg}$ such that both $u$ and $\db u$ are locally $L^2$ with
+respect to $(h,\omega)$ up to $X_{\sing}$. The derivative is the maximal
+distributional $\db$ on $X_{\reg}$. Thus local integrability means
+finiteness on $V\cap X_{\reg}$ for every $V\Subset U$.
+
+\begin{proposition}[Analytic input A: weighted Dolbeault resolution]
+\label{prop:resolution}
+Under the local hypotheses above, the sequence
+\begin{equation}\label{eq:fine}
+0\longrightarrow\FF_{L,h}\longrightarrow\scrA^{n,0}_{L,h}
+\xrightarrow{\db}\scrA^{n,1}_{L,h}\xrightarrow{\db}\cdots
+\xrightarrow{\db}\scrA^{n,n}_{L,h}\longrightarrow0
+\end{equation}
+is an exact complex of fine sheaves after its initial term. Consequently,
+\begin{equation}\label{eq:cohomology}
+ H^q(X,\FF_{L,h})\simeq
+ H^q\bigl(\Gamma(X,\scrA^{n,\bullet}_{L,h}),\db\bigr).
+\end{equation}
+\end{proposition}
+
+\noindent
+This is the specialization of \cite[Theorem~1.3]{ShentuZhao} to the
+pullback bundle $(\pi^*L,\pi^*h)$; it is also covered by
+\cite[Theorem~1.1]{Watanabe}. Indeed, near any point choose a relatively
+compact local embedding into $\mathbb C^N$. A sufficiently large multiple
+of $|z|^2$ is a bounded strictly plurisubharmonic local potential dominating
+the given metric, while $\pi^*h$ has semipositive curvature. These verify
+the local metric hypotheses of the cited theorem. The initial sheaf is
+identified by Proposition~\ref{prop:transform}. Smooth partitions of unity
+preserve the maximal $\db$ domain, so the remaining sheaves are fine.
+
+\begin{proposition}[Analytic input B: global estimate]
+\label{prop:estimate}
+In the setting of Theorem~\ref{thm:main}, assume $\varepsilon$ is smooth.
+Let $1\leq q\leq n$ and let $f$ be a locally $L^2$, $L$-valued
+$(n,q)$-form on $X$, with $\db f=0$ on $X_{\reg}$. If
+\begin{equation}\label{eq:finiteinput}
+ \int_{X_{\reg}}\varepsilon^{-1}|f|_{h,\omega}^2\dV<\infty,
+\end{equation}
+then there is an $L$-valued $(n,q-1)$-form $u$ satisfying $\db u=f$ on
+$X_{\reg}$ and
+\begin{equation}\label{eq:estimate}
+ \int_{X_{\reg}}|u|_{h,\omega}^2\dV
+ \leq \frac1q\int_{X_{\reg}}
+             \varepsilon^{-1}|f|_{h,\omega}^2\dV.
+\end{equation}
+\end{proposition}
+
+\noindent
+This is the line-bundle case of \cite[Theorem~1.3]{Watanabe}. All
+integrals above are taken on the regular locus, with integrability
+required near the singular locus as well. We use this result directly;
+we do not assume that the given metric on $X_{\reg}$ is complete.
+
+\section{Proof of the vanishing theorem}
+
+The role of an exhaustion is to turn a locally $L^2$ cohomology
+representative into a globally integrable one without altering its local
+integrability sheaf.
+
+\begin{lemma}[An integrable exhaustion weight]\label{lem:weight}
+Let $\Psi:X\to[0,\infty)$ be a continuous exhaustion and let $\mu$ be a
+positive Borel measure finite on compact subsets of $X$. There exists a
+smooth increasing convex function $\chi:\mathbb R\to\mathbb R$ such that
+\begin{equation}\label{eq:exhaustionweight}
+ \int_X e^{-\chi(\Psi)}\,d\mu<\infty.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Set $a_j=\mu(\{j\leq\Psi<j+1\})<\infty$ for $j\geq0$. Choose a smooth
+increasing convex function satisfying
+\[
+ \chi(j)\geq\log(1+a_j)+j\log2\qquad(j\geq0).
+\]
+Such a function is obtained by constructing an increasing convex
+polygonal majorant and smoothing it from above. On the $j$th shell,
+$\chi(\Psi)\geq\chi(j)$, so
+\[
+ \int_X e^{-\chi(\Psi)}\,d\mu
+ \leq\sum_{j=0}^\infty a_j e^{-\chi(j)}
+ \leq\sum_{j=0}^\infty 2^{-j}<\infty.
+ \qedhere
+\]
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+A positive continuous function on $X$ has a positive smooth minorant,
+constructed with a locally finite smooth partition of unity. Replacing
+$\varepsilon$ by such a minorant, we assume it is smooth.
+For $q>n$ the conclusion follows already from the length of the fine
+resolution \eqref{eq:fine}. Fix $1\leq q\leq n$.
+
+By \eqref{eq:cohomology}, a class in $H^q(X,\FF_{L,h})$ has a
+representative
+\[
+ f\in\Gamma(X,\scrA^{n,q}_{L,h}),\qquad\db f=0.
+\]
+Consider the measure, extended by zero on $X_{\sing}$,
+\[
+ d\mu=\varepsilon^{-1}|f|_{h,\omega}^2\,dV_\omega.
+\]
+It is finite on compact subsets: $f$ is locally $L^2$ up to the singular
+locus and $\varepsilon$ has a positive minimum on each compact set.
+Choose a smooth plurisubharmonic exhaustion $\Psi$. By
+Lemma~\ref{lem:weight}, there is a smooth increasing convex $\chi$ with
+\begin{equation}\label{eq:weightedfinite}
+ \int_{X_{\reg}}\varepsilon^{-1}|f|_{h,\omega}^2
+                          e^{-\chi(\Psi)}\dV<\infty.
+\end{equation}
+
+Define a new metric on the same line bundle by
+\[
+ h_\chi=h\,e^{-\chi(\Psi)}.
+\]
+Its local weights are $\varphi+\tfrac12\chi(\Psi)$, hence remain
+plurisubharmonic. Moreover,
+\begin{align}
+ \ii\Theta_{L,h_\chi}
+ &=\ii\Theta_{L,h}+\ii\partial\db\chi(\Psi)\notag\\
+ &=\ii\Theta_{L,h}
+   +\chi'(\Psi)\ii\partial\db\Psi
+   +\chi''(\Psi)\ii\partial\Psi\wedge\db\Psi\notag\\
+ &\geq\varepsilon\omega.
+ \label{eq:weightedcurvature}
+\end{align}
+On every compact subset, $e^{-\chi(\Psi)}$ is bounded above and below by
+positive constants. Consequently,
+\begin{equation}\label{eq:same-sheaves}
+ \FF_{L,h_\chi}=\FF_{L,h},
+ \qquad
+ \scrA^{n,\bullet}_{L,h_\chi}=\scrA^{n,\bullet}_{L,h}.
+\end{equation}
+
+Apply Proposition~\ref{prop:estimate} to the metric $h_\chi$ and the form
+$f$. Equations~\eqref{eq:weightedfinite} and
+\eqref{eq:weightedcurvature} yield $u$ with $\db u=f$ and
+\[
+ \int_{X_{\reg}}|u|_{h,\omega}^2 e^{-\chi(\Psi)}\dV
+ \leq\frac1q\int_{X_{\reg}}\varepsilon^{-1}|f|_{h,\omega}^2
+                                  e^{-\chi(\Psi)}\dV<\infty.
+\]
+Local equivalence of $h_\chi$ and $h$ implies that $u$ is locally $L^2$
+for $h$, up to the singular locus. Since $\db u=f$ is locally $L^2$ as
+well, $u\in\Gamma(X,\scrA^{n,q-1}_{L,h})$. Thus $f$ is exact in the complex
+computing sheaf cohomology, and the original class vanishes.
+\end{proof}
+
+\section{What a resolution argument gives}
+\label{sec:resolution}
+
+Choose a resolution $\pi:\widetilde X\to X$ that is locally projective
+over $X$, and put
+\[
+ \mathcal G=K_{\widetilde X}\otimes\pi^*L\otimes\II(\pi^*h).
+\]
+Since the local weights of $h$ are plurisubharmonic on $X$, the metric
+$\pi^*h$ has semipositive curvature on $\widetilde X$. Matsumura's relative
+vanishing \cite[Corollary~1.5]{Matsumura}, applied locally on the base
+and componentwise if necessary, gives
+\begin{equation}\label{eq:relative}
+ R^j\pi_*\mathcal G=0\qquad(j>0).
+\end{equation}
+Indeed, that result gives vanishing in degrees greater than the dimension
+of the general fiber, which is zero here. Together with
+\eqref{eq:twistedtransform}, the Leray spectral sequence yields
+\begin{equation}\label{eq:leray}
+ H^q(X,\FF_{L,h})\simeq H^q(\widetilde X,\mathcal G).
+\end{equation}
+
+\begin{remark}[The missing positivity in a naive pullback proof]
+Equation~\eqref{eq:leray} is a cohomology comparison, not yet a vanishing
+proof. Even if one has the pulled-back inequality
+\[
+ \ii\Theta_{\pi^*L,\pi^*h}
+ \geq(\varepsilon\circ\pi)\pi^*\omega,
+\]
+the form $\pi^*\omega$ is only semipositive: it can degenerate where
+$d\pi$ has a kernel. Thus it is not, in general, a K\"ahler metric on
+$\widetilde X$, and ordinary smooth Nadel vanishing cannot be invoked
+from this inequality alone. One needs an additional positivity argument,
+or the direct singular-space estimate used above; compare
+\cite[Remark~6.5]{Watanabe}.
+\end{remark}
+
+\section{Specializations and the tensor-product issue}
+
+\begin{corollary}[Smooth spaces and locally bounded metrics]
+Under the hypotheses of Theorem~\ref{thm:main}, the following hold.
+If $X$ is smooth, then
+\[
+ \wGR(h)=K_X\otimes\II(h),\qquad
+ H^q(X,K_X\otimes L\otimes\II(h))=0\quad(q\geq1).
+\]
+If the local weights of $h$ are locally bounded, in particular if $h$ is
+smooth, then
+\[
+ \wGR(h)=\wGR,\qquad
+ H^q(X,\wGR\otimes L)=0\quad(q\geq1).
+\]
+For compact $X$, these statements apply with a constant exhaustion.
+\end{corollary}
+
+\begin{proof}
+On a manifold, writing a top form in local coordinates identifies its
+weighted integrability with membership of its coefficient in $\II(h)$.
+For a locally bounded weight, multiplication by $e^{-2\varphi}$ does
+not change local integrability. The assertions now follow from
+Theorem~\ref{thm:main}.
+\end{proof}
+
+In general, however, $\wGR(h)$ must not be replaced without justification
+by $\wGR$ tensored with a separately defined multiplier ideal on $X$.
+The following calculation exhibits the problem for the direct
+volume-based definition.
+
+\begin{example}[The cusp]\label{ex:cusp}
+Work near the origin of the cusp
+\[
+ X=\{(x,y)\in\mathbb C^2:y^2=x^3\},
+ \qquad\nu(t)=(t^2,t^3),
+\]
+whose normalization is a small disc $\Delta$. Set
+$\varphi=\tfrac12\log|x|$, so that $\varphi\circ\nu=\log|t|$.
+For the area measure induced by the Euclidean metric,
+\[
+ \nu^*dV_X=(4|t|^2+9|t|^4)\,dA(t)\asymp|t|^2dA(t).
+\]
+Define the volume-based ideal by
+\[
+ \II_{\vol}(\varphi)=
+ \{g\in\OO_X:|g|^2e^{-2\varphi}\in L^1_{\loc}(dV_X)\}.
+\]
+The constant function $1$ satisfies this condition, since
+\[
+ e^{-2\varphi\circ\nu}\nu^*dV_X
+ =(4+9|t|^2)\,dA(t).
+\]
+Thus $\II_{\vol}(\varphi)=\OO_X$.
+
+For a holomorphic top form upstairs, the weighted condition is instead
+\[
+ \int_{|t|<r} |a(t)|^2|t|^{-2}\,dA(t)<\infty
+ \quad\text{for the form }a(t)\,dt.
+\]
+For sufficiently small $r>0$, it holds exactly when $a(0)=0$: if $a$ has
+vanishing order $k$, the radial
+integral is comparable to $\int_0^r\rho^{2k-1}\,d\rho$, finite exactly
+when $k\geq1$. Consequently,
+\[
+ \wGR=\nu_*(\OO_\Delta\,dt),\qquad
+ \wGR(\varphi)=\nu_*(t\OO_\Delta\,dt),
+\]
+and therefore
+\begin{equation}\label{eq:cusp-inequality}
+ \wGR(\varphi)\ne\wGR\otimes\II_{\vol}(\varphi).
+\end{equation}
+This example concerns the explicitly defined volume-based ideal; it does
+not identify or conflate the different multiplier-ideal conventions
+available on singular spaces.
+\end{example}
+
+The appropriate singular analogue of the sheaf in Nadel vanishing is
+therefore the single weighted canonical module
+\[
+ K_X\otimes L\otimes\II(h)
+ \quad\rightsquigarrow\quad
+ \wGR(h)\otimes L
+ \simeq\pi_*\bigl(K_{\widetilde X}\otimes\pi^*L\otimes\II(\pi^*h)\bigr),
+\]
+with higher-cohomology vanishing under the hypotheses of
+Theorem~\ref{thm:main}.
+
+\begin{thebibliography}{SZ20}
+\raggedright
+
+\bibitem[Dem00]{Demailly}
+J.-P.~Demailly,
+\emph{Multiplier ideal sheaves and analytic methods in algebraic geometry},
+lectures at the ICTP School, Trieste, April~24--May~12, 2000.
+See Theorem~5.11 and Remark~5.17.
+\href{https://www-fourier.univ-grenoble-alpes.fr/~demailly/manuscripts/trieste.pdf}
+{Author's lecture notes}.
+
+\bibitem[Li21]{Li}
+Z.~Li,
+\emph{Grauert--Riemenschneider multiplier ideal sheaves and the (optimal)
+Brian\c{c}on--Skoda number},
+\href{https://arxiv.org/abs/2104.14047v1}{arXiv:2104.14047v1}, 2021.
+See Remark~2.2 and Theorem~2.3.
+
+\bibitem[Mat18]{Matsumura}
+S.-i.~Matsumura,
+\emph{Injectivity theorems with multiplier ideal sheaves for higher direct
+images under K\"ahler morphisms},
+\href{https://arxiv.org/abs/1607.05554v2}{arXiv:1607.05554v2}, 2018.
+See Corollary~1.5.
+
+\bibitem[SZ20]{ShentuZhao}
+J.~Shentu and C.~Zhao,
+\emph{MacPherson's conjecture via H\"ormander estimate},
+\href{https://arxiv.org/abs/2002.06882v2}{arXiv:2002.06882v2}, 2020.
+See Theorem~1.3 in this version.
+Published as \emph{MacPherson's conjecture via H\"ormander's estimate},
+Int. Math. Res. Not. IMRN \textbf{2023} (2023), 2170--2187.
+
+\bibitem[Wat26]{Watanabe}
+Y.~Watanabe,
+\emph{$L^2$-Dolbeault resolutions and Nadel vanishing on weakly
+pseudoconvex complex spaces with singular Hermitian metrics},
+preprint, \href{https://arxiv.org/abs/2602.03332v2}{arXiv:2602.03332v2},
+July~15, 2026.
+See Theorems~1.1, 1.3, 1.4, and 6.4, and Remark~6.5.
+
+\end{thebibliography}
+\end{document}

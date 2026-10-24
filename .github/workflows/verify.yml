@@ -1,0 +1,13 @@
+name: Verify manuscript files
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  source-pdf-pairing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check recorded source and PDF hashes
+        run: python3 verification/scripts/verify.py

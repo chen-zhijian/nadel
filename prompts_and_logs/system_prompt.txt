@@ -1,0 +1,3 @@
+STATUS: NOT AVAILABLE IN THE RECOVERED VISIBLE-MESSAGE VIEW
+
+The recovered conversation view contains user and assistant messages, not the historical system prompt. This file records that limit. No system prompt, platform instruction, or hidden reasoning has been reconstructed or exported.
